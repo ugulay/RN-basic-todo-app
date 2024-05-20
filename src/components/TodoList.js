@@ -196,6 +196,7 @@ const TodoList = () => {
             <Text style={styles.title}>TODO</Text>
 
             <TextInput
+                multiline={true}
                 style={styles.input}
                 placeholder="Enter"
                 value={task?.text}
