@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import uuid from 'react-native-uuid';
-import { MMKV } from 'react-native-mmkv'
-export const storage = new MMKV();
+import storage from '../storage';
 import {
     View,
     Text,
     TextInput,
     TouchableOpacity,
     FlatList,
-    StyleSheet,
     Alert
 } from "react-native";
+import TodoListItem from './TodoListItem';
+import styles from '../styles';
 
-const App = () => {
+const TodoList = () => {
 
     const [task, setTask] = useState({
         id: null,
@@ -89,15 +89,16 @@ const App = () => {
     }
 
     const handleAddTask = async () => {
+
         if (task) {
+
             if (editIndex !== -1) {
 
                 // Edit existing task 
-
                 const taskDataUpdated = {
                     id: editIndex,
                     date: new Date(),
-                    done: false,
+                    // done: false, // removed bc. if todo item edited, makes item "undone" again
                     text: task?.text
                 }
 
@@ -107,6 +108,7 @@ const App = () => {
                 setEditIndex(-1);
 
             } else {
+
                 // Add new task 
                 const taskData = {
                     id: uuid.v4(),
@@ -162,7 +164,7 @@ const App = () => {
 
     const handleDeleteAllTask = async () => {
 
-        Alert.alert('Alert Title', 'Are you sure to clear all items ?', [
+        Alert.alert('Alert', 'Are you sure to clear all items ?', [
             {
                 text: 'Cancel',
                 onPress: () => null,
@@ -186,37 +188,6 @@ const App = () => {
     useEffect(() => {
         loadNotes();
     }, []);
-
-    const renderItem = ({ item, index }) => (
-
-        <View style={styles.task}>
-
-            <Text style={item?.done === false ? styles.taskListText : styles.taskListTextDone}>{item?.text}</Text>
-
-            <View style={styles.taskButtons}>
-
-                <TouchableOpacity
-                    onPress={() => handleDoneTask(item)}>
-                    <Text style={styles.doneButton}>{
-                        item?.done === false ? 'Done' : 'Undone'
-                    }</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => handleEditTask(item)}>
-                    <Text style={styles.editButton}>Edit</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    onPress={() => handleDeleteTask(item?.id)}>
-                    <Text style={styles.deleteButton}>Delete</Text>
-                </TouchableOpacity>
-
-            </View>
-
-        </View>
-
-    );
 
     return (
 
@@ -247,10 +218,18 @@ const App = () => {
 
             <FlatList
                 data={tasks}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => {
-                    return String(item?.id);
-                }}
+                renderItem={
+                    ({ item, index }) => {
+                        return <TodoListItem
+                            item={item}
+                            index={index}
+                            handleEditTask={handleEditTask}
+                            handleDeleteTask={handleDeleteTask}
+                            handleDoneTask={handleDoneTask}
+                        />
+                    }
+                }
+                keyExtractor={(item, index) => String(item?.id)}
             />
 
             <TouchableOpacity
@@ -265,85 +244,4 @@ const App = () => {
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 10,
-    },
-    heading: {
-        fontSize: 30,
-        fontWeight: "bold",
-        marginBottom: 7,
-        color: "green",
-    },
-    input: {
-        borderWidth: 2,
-        borderColor: "#ccc",
-        padding: 10,
-        marginBottom: 5,
-        borderRadius: 5,
-        fontSize: 16,
-    },
-    addButton: {
-        backgroundColor: "green",
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 10,
-    },
-    addButtonText: {
-        color: "white",
-        fontWeight: "bold",
-        textAlign: "center",
-        fontSize: 16,
-    },
-    task: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignContent: "center",
-        alignItems: "center",
-        marginBottom: 5,
-        padding: 5,
-        paddingRight: 0,
-        fontSize: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#eee'
-    },
-    taskListText: {
-        fontSize: 18,
-        maxWidth: '60%',
-    },
-    taskListTextDone: {
-        fontSize: 18,
-        maxWidth: '60%',
-        textDecorationLine: 'line-through',
-        textDecorationStyle: 'solid'
-    },
-    taskButtons: {
-        flexDirection: "row",
-        maxWidth: '40%'
-    },
-    editButton: {
-        marginRight: 10,
-        color: "green",
-        fontWeight: "bold",
-        fontSize: 16,
-    },
-    doneButton: {
-        marginRight: 10,
-        color: "blue",
-        fontWeight: "bold",
-        fontSize: 16,
-    },
-    deleteButton: {
-        color: "red",
-        fontWeight: "bold",
-        fontSize: 16,
-    },
-});
-
-export default App;
+export default TodoList;

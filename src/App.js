@@ -1,9 +1,11 @@
 // App.js
 import React from 'react';
-import Home from './components/Home';
+import TodoList from './components/TodoList';
 
 export default function App() {
-  return (
-    <Home />
-  );
+
+	return (
+		<TodoList />
+	);
+
 }
