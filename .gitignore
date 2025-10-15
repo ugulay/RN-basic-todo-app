@@ -88,3 +88,7 @@ yarn-error.log
 dist/
 temp/
 tmp/
+
+# Android specific ignores
+/android/gradle.properties
+/android/secrets.properties
