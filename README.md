@@ -71,6 +71,53 @@ Bu projeyi yerel makinenizde kurmak ve geliştirmeye başlamak için aşağıdak
         react-native run-ios
         ```
 
+### Uygulama İmzalama ve Google Play'e Yükleme
+
+Uygulamanızı Google Play Store'a yüklemek için bir yayın anahtarı ile imzalamanız ve bir Android App Bundle (AAB) oluşturmanız gerekmektedir.
+
+#### 1. Keystore Oluşturma (Eğer Mevcut Değilse)
+
+Eğer daha önce bir yayın anahtarı (keystore) oluşturmadıysanız veya mevcut anahtarınızı kaybettiyseniz, yeni bir tane oluşturmanız gerekmektedir.
+
+```bash
+keytool -genkeypair -v -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Bu komut, `my-upload-key.keystore` adında bir keystore dosyası oluşturacak ve `my-key-alias` adında bir anahtar içerecektir. Komutu çalıştırdığınızda sizden şifreler ve diğer bilgiler istenecektir. Bu bilgileri güvenli bir yerde saklayın.
+
+#### 2. `secrets.properties` Dosyasını Yapılandırma
+
+Oluşturduğunuz veya mevcut olan keystore bilgilerini Gradle'ın okuyabilmesi için `android/secrets.properties` dosyasını oluşturmanız veya güncellemeniz gerekmektedir. Bu dosya hassas bilgileri içerdiğinden `git`'e commit edilmemelidir. `.gitignore` dosyanızda `/android/secrets.properties` satırının bulunduğundan emin olun.
+
+`android/secrets.properties` dosyası aşağıdaki gibi olmalıdır:
+
+```properties
+MYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
+MYAPP_UPLOAD_KEY_ALIAS=my-key-alias
+MYAPP_UPLOAD_STORE_PASSWORD=your_store_password
+MYAPP_UPLOAD_KEY_PASSWORD=your_key_password
+```
+
+*   `MYAPP_UPLOAD_STORE_FILE`: Keystore dosyanızın adı (örneğin, `my-upload-key.keystore`). Bu dosya `android/` dizininde bulunmalıdır.
+*   `MYAPP_UPLOAD_KEY_ALIAS`: Keystore içindeki anahtarınızın takma adı (örneğin, `my-key-alias`).
+*   `MYAPP_UPLOAD_STORE_PASSWORD`: Keystore dosyanızın şifresi.
+*   `MYAPP_UPLOAD_KEY_PASSWORD`: Keystore içindeki anahtarınızın şifresi.
+
+#### 3. Android App Bundle (AAB) Oluşturma
+
+Uygulamanızın yayın sürümünü oluşturmak için `android` dizinine gidin ve aşağıdaki komutu çalıştırın:
+
+```bash
+cd android
+./gradlew bundleRelease
+```
+
+Bu komut, `android/app/build/outputs/bundle/release/app-release.aab` yolunda bir AAB dosyası oluşturacaktır.
+
+#### 4. Google Play Console'a Yükleme
+
+Oluşturulan `app-release.aab` dosyasını Google Play Console'a yükleyebilirsiniz. Eğer uygulamanız daha önce yayınlandıysa ve farklı bir anahtarla imzalandığı hatasını alırsanız, Google Play App Signing hizmetini kullanıyorsanız Google Play Destek ile iletişime geçerek anahtarınızı sıfırlamanız gerekebilir. Yeni bir uygulama yüklüyorsanız, bu adımı atlayabilirsiniz.
+
 ## Katkıda Bulunma
 
 BasicNotes projesine katkıda bulunmaktan mutluluk duyarız! Her türlü katkı, projenin daha iyi hale gelmesine yardımcı olur.
