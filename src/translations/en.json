@@ -1,0 +1,21 @@
+{
+  "all": "All",
+  "active": "Active",
+  "completed": "Completed",
+  "important": "Important",
+  "edit_task": "Edit Task",
+  "add_new_task": "Add New Task",
+  "enter_new_task": "Enter a new task...",
+  "update": "Update",
+  "add": "Add",
+  "delete_task": "Delete Task",
+  "are_you_sure_delete_task": "Are you sure you want to delete this task?",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "selected": "selected",
+  "unselect_all": "Unselect All",
+  "select_all": "Select All",
+  "mark_as_done_undo": "Mark as Done/Undo",
+  "edit": "Edit",
+  "share": "Share"
+}

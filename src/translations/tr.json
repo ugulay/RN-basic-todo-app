@@ -1,0 +1,21 @@
+{
+  "all": "Tümü",
+  "active": "Aktif",
+  "completed": "Tamamlananlar",
+  "important": "Önemli",
+  "edit_task": "Görevi Düzenle",
+  "add_new_task": "Yeni Görev Ekle",
+  "enter_new_task": "Yeni bir görev girin...",
+  "update": "Güncelle",
+  "add": "Ekle",
+  "delete_task": "Görevi Sil",
+  "are_you_sure_delete_task": "Bu görevi silmek istediğinizden emin misiniz?",
+  "cancel": "İptal",
+  "delete": "Sil",
+  "selected": "seçildi",
+  "unselect_all": "Tümünü Bırak",
+  "select_all": "Tümünü Seç",
+  "mark_as_done_undo": "Bitti/Geri Al",
+  "edit": "Düzenle",
+  "share": "Paylaş"
+}
