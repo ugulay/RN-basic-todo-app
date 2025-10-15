@@ -92,3 +92,5 @@ tmp/
 # Android specific ignores
 /android/gradle.properties
 /android/secrets.properties
+
+upload_certificate.pem
