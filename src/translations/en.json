@@ -1,4 +1,7 @@
 {
+  "app_title": "My Tasks",
+  "progress_summary": "%{done} of %{total} completed",
+  "no_tasks_yet": "No tasks yet",
   "all": "All",
   "active": "Active",
   "completed": "Completed",
@@ -16,6 +19,16 @@
   "unselect_all": "Unselect All",
   "select_all": "Select All",
   "mark_as_done_undo": "Mark as Done/Undo",
+  "done": "Done",
+  "undo": "Undo",
   "edit": "Edit",
-  "share": "Share"
+  "share": "Share",
+  "empty_all_title": "No tasks yet",
+  "empty_all_subtitle": "Tap the + button to add your first task.",
+  "empty_active_title": "All caught up!",
+  "empty_active_subtitle": "You have no active tasks right now.",
+  "empty_completed_title": "Nothing completed yet",
+  "empty_completed_subtitle": "Tasks you finish will appear here.",
+  "empty_important_title": "No important tasks",
+  "empty_important_subtitle": "Star a task to mark it as important."
 }

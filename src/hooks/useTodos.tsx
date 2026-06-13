@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { LayoutAnimation } from 'react-native';
 import uuid from 'react-native-uuid';
 import storage from '../storage';

@@ -13,14 +13,75 @@ const Colors = {
     onSecondary: '#000000',
     onBackground: '#FFFFFF',
     onSurface: '#FFFFFF',
+    onSurfaceVariant: '#B0B0B0',
     onError: '#000000',
+    star: '#FFD700',
 };
 
+export { Colors };
+
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: Colors.background,
+    },
     container: {
         flex: 1,
         backgroundColor: Colors.background,
         padding: 15,
+    },
+
+    // Header
+    header: {
+        marginBottom: 18,
+    },
+    headerTopRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: Colors.onBackground,
+    },
+    headerSubtitle: {
+        fontSize: 13,
+        color: Colors.onSurfaceVariant,
+    },
+    progressBarTrack: {
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: Colors.surface,
+        marginTop: 12,
+        overflow: 'hidden',
+    },
+    progressBarFill: {
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: Colors.secondary,
+    },
+
+    // Empty State
+    emptyContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 60,
+        paddingHorizontal: 30,
+    },
+    emptyTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: Colors.onBackground,
+        marginTop: 16,
+        marginBottom: 6,
+    },
+    emptySubtitle: {
+        fontSize: 14,
+        color: Colors.onSurfaceVariant,
+        textAlign: 'center',
+        lineHeight: 20,
     },
     filterContainer: {
         flexDirection: 'row',
@@ -139,6 +200,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.secondary,
         borderRadius: 30,
         elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
     },
     fabText: {
         fontSize: 30,
@@ -181,10 +246,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
     },
+    modalButtonDisabled: {
+        backgroundColor: '#2C2C2C',
+    },
     modalButtonText: {
         color: Colors.onSecondary,
         fontWeight: "bold",
         fontSize: 18,
+    },
+    modalButtonTextDisabled: {
+        color: '#666',
     },
 
     // Selection Mode Action Bar
@@ -212,6 +283,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginLeft: 20,
     },
+    selectionIconButton: {
+        marginLeft: 22,
+    },
 
     // Swipeable Actions
     leftAction: {
@@ -232,10 +306,15 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         borderBottomRightRadius: 10,
     },
+    actionContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
     actionText: {
         color: Colors.onError,
         fontWeight: '600',
-        padding: 20,
+        marginLeft: 8,
         fontSize: 16,
     }
 });
