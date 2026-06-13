@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { LayoutAnimation } from 'react-native';
 import uuid from 'react-native-uuid';
 import storage from '../storage';
+import { recordCompletion } from '../progress';
 
 interface Task {
   id: string;
@@ -24,7 +25,7 @@ export const useTodos = () => {
     const loadNotes = async () => {
         try {
             const allKeys = storage?.getAllKeys() || [];
-            const todoKeys = allKeys.filter(key => !key.startsWith('reminder-')); // Filter out reminder keys
+            const todoKeys = allKeys.filter(key => !key.startsWith('reminder-') && key !== 'progress'); // Exclude reminder + progress keys
             if (todoKeys.length > 0) {
                 const loadedTasks = todoKeys.map(id => JSON.parse(storage?.getString(id) || 'null')).filter(Boolean);
                 setTasks(loadedTasks);
@@ -69,6 +70,7 @@ export const useTodos = () => {
             const updatedTask = { ...task, done: !task.done };
             LayoutAnimation.spring();
             storage.set(id, JSON.stringify(updatedTask));
+            recordCompletion(updatedTask.done ? 1 : -1, { important: task.isImportant });
             await loadNotes();
         }
     };
@@ -124,6 +126,9 @@ export const useTodos = () => {
         selectedIds.forEach(id => {
             const task = tasks.find(t => t.id === id);
             if (task) {
+                if (task.done !== newDoneStatus) {
+                    recordCompletion(newDoneStatus ? 1 : -1, { important: task.isImportant });
+                }
                 const updatedTask = { ...task, done: newDoneStatus };
                 storage.set(id, JSON.stringify(updatedTask));
             }

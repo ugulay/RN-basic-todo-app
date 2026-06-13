@@ -7,7 +7,9 @@ import {
 } from './progress.types';
 import { checkBadges } from './achievements';
 
-const storage = new MMKV();
+// Exported so useProgress can subscribe to changes on the SAME instance
+// (react-native-mmkv listeners fire for writes made through that instance).
+export const storage = new MMKV();
 
 /** Local-time 'YYYY-MM-DD' for a given date (default: now). */
 export function todayKey(d: Date = new Date()): string {

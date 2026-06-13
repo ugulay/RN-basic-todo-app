@@ -17,6 +17,12 @@ import { useTodos } from '../hooks/useTodos';
 import TodoListItem from './TodoListItem';
 import styles, { Colors } from '../styles';
 import i18n from '../i18n';
+import { useNavigation } from '@react-navigation/native';
+import { useProgress } from '../hooks/useProgress';
+import StreakChip from './StreakChip';
+import LevelBadge from './LevelBadge';
+import DailyGoalRing from './DailyGoalRing';
+import UnlockToast from './UnlockToast';
 
 type Filter = 'ALL' | 'ACTIVE' | 'COMPLETED' | 'IMPORTANT';
 
@@ -53,6 +59,18 @@ const TodoList = () => {
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [isModalVisible, setModalVisible] = useState(false);
 
+    const navigation = useNavigation<any>();
+    const { stats, progress } = useProgress();
+    const [toastBadge, setToastBadge] = useState<string | null>(null);
+    const prevUnlocked = React.useRef(progress.unlockedBadges.length);
+
+    useEffect(() => {
+        if (progress.unlockedBadges.length > prevUnlocked.current) {
+            setToastBadge(progress.unlockedBadges[progress.unlockedBadges.length - 1]);
+        }
+        prevUnlocked.current = progress.unlockedBadges.length;
+    }, [progress.unlockedBadges]);
+
     const taskToEdit = editId ? tasks.find(t => t.id === editId) : null;
 
     useEffect(() => {
@@ -66,7 +84,6 @@ const TodoList = () => {
 
     const completedCount = React.useMemo(() => tasks.filter(t => t.done).length, [tasks]);
     const totalCount = tasks.length;
-    const progress = totalCount > 0 ? completedCount / totalCount : 0;
 
     const filteredTasks = React.useMemo(() => {
         const sortedTasks = [...tasks].sort((a, b) => (Number(b.isImportant) - Number(a.isImportant)));
@@ -116,19 +133,31 @@ const TodoList = () => {
 
     const renderHeader = () => (
         <View style={styles.header}>
-            <View style={styles.headerTopRow}>
-                <Text style={styles.headerTitle}>{i18n.t('app_title')}</Text>
-                <Text style={styles.headerSubtitle}>
-                    {totalCount > 0
-                        ? i18n.t('progress_summary', { done: completedCount, total: totalCount })
-                        : i18n.t('no_tasks_yet')}
-                </Text>
-            </View>
-            {totalCount > 0 && (
-                <View style={styles.progressBarTrack}>
-                    <View style={[styles.progressBarFill, { width: `${progress * 100}%` as `${number}%` }]} />
+            <View style={styles.headerRow}>
+                <StreakChip streak={stats.currentStreak} />
+                <View style={styles.headerRight}>
+                    <LevelBadge level={stats.level} />
+                    <TouchableOpacity
+                        style={styles.statsIconBtn}
+                        onPress={() => navigation.navigate('Stats')}
+                        accessibilityRole="button"
+                        accessibilityLabel={i18n.t('stats_title')}
+                    >
+                        <Icon name="bar-chart" size={22} color={Colors.onSurface} />
+                    </TouchableOpacity>
                 </View>
-            )}
+            </View>
+            <View style={styles.titleRow}>
+                <View style={{ flex: 1 }}>
+                    <Text style={styles.headerTitle}>{i18n.t('app_title')}</Text>
+                    <Text style={styles.headerSubtitle}>
+                        {totalCount > 0
+                            ? i18n.t('progress_summary', { done: completedCount, total: totalCount })
+                            : i18n.t('no_tasks_yet')}
+                    </Text>
+                </View>
+                <DailyGoalRing done={stats.todayCompleted} goal={stats.dailyGoal} />
+            </View>
         </View>
     );
 
@@ -286,6 +315,8 @@ const TodoList = () => {
                         <Icon name="add" size={32} color={Colors.onSecondary} />
                     </TouchableOpacity>
                 )}
+
+                <UnlockToast badgeId={toastBadge} onHide={() => setToastBadge(null)} />
             </View>
         </SafeAreaView>
     );
