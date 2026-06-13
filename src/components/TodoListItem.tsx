@@ -4,10 +4,11 @@ import {
     Text,
     TouchableOpacity,
     Animated,
+    Alert,
     Share
 } from "react-native";
 import { Swipeable } from 'react-native-gesture-handler';
-import styles from '../styles';
+import styles, { Colors } from '../styles';
 import i18n from '../i18n';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -76,7 +77,7 @@ const TodoListItem: React.FC<TodoListItemProps> = ({
                 // dismissed
             }
         } catch (error: any) {
-            alert(error.message);
+            Alert.alert(error.message);
         }
     };
 
@@ -87,9 +88,12 @@ const TodoListItem: React.FC<TodoListItemProps> = ({
         });
         return (
             <View style={styles.leftAction}>
-                <Animated.Text style={[styles.actionText, { transform: [{ translateX: trans }] }]}>
-                    {item.done ? i18n.t('mark_as_done_undo') : i18n.t('mark_as_done_undo')}
-                </Animated.Text>
+                <Animated.View style={[styles.actionContent, { transform: [{ translateX: trans }] }]}>
+                    <Icon name={item.done ? 'undo' : 'check'} size={22} color={Colors.onSecondary} />
+                    <Text style={styles.actionText}>
+                        {item.done ? i18n.t('undo') : i18n.t('done')}
+                    </Text>
+                </Animated.View>
             </View>
         );
     };
@@ -101,9 +105,12 @@ const TodoListItem: React.FC<TodoListItemProps> = ({
         });
         return (
             <View style={styles.rightAction}>
-                <Animated.Text style={[styles.actionText, { transform: [{ translateX: trans }] }]}>
-                    {i18n.t('delete')}
-                </Animated.Text>
+                <Animated.View style={[styles.actionContent, { transform: [{ translateX: trans }] }]}>
+                    <Icon name="delete" size={22} color={Colors.onError} />
+                    <Text style={styles.actionText}>
+                        {i18n.t('delete')}
+                    </Text>
+                </Animated.View>
             </View>
         );
     };
@@ -128,13 +135,13 @@ const TodoListItem: React.FC<TodoListItemProps> = ({
                                 {item.text}
                             </Text>
                             <View style={styles.bottomControlsContainer}>
-                                <TouchableOpacity onPress={() => onEdit(item.id)} style={styles.iconButton}>
+                                <TouchableOpacity onPress={() => onEdit(item.id)} style={styles.iconButton} accessibilityLabel={i18n.t('edit')}>
                                     <Icon name="edit" size={20} color={styles.editButton.color} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={(e) => { e.stopPropagation(); onTogglePriority(item.id); }} style={styles.iconButton}>
-                                    <Icon name={item.isImportant ? "star" : "star-border"} size={20} color={styles.priorityButtonImportant.color} />
+                                <TouchableOpacity onPress={(e) => { e.stopPropagation(); onTogglePriority(item.id); }} style={styles.iconButton} accessibilityLabel={i18n.t('important')}>
+                                    <Icon name={item.isImportant ? "star" : "star-border"} size={20} color={item.isImportant ? Colors.star : Colors.onSurfaceVariant} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={handleShare} style={styles.iconButton}>
+                                <TouchableOpacity onPress={handleShare} style={styles.iconButton} accessibilityLabel={i18n.t('share')}>
                                     <Icon name="share" size={20} color={styles.editButton.color} />
                                 </TouchableOpacity>
                             </View>
@@ -149,8 +156,8 @@ const TodoListItem: React.FC<TodoListItemProps> = ({
                             >
                                 {item.text}
                             </Text>
-                            <TouchableOpacity onPress={(e) => { e.stopPropagation(); onTogglePriority(item.id); }} style={styles.iconButton}>
-                                <Icon name={item.isImportant ? "star" : "star-border"} size={20} color={styles.priorityButtonImportant.color} />
+                            <TouchableOpacity onPress={(e) => { e.stopPropagation(); onTogglePriority(item.id); }} style={styles.iconButton} accessibilityLabel={i18n.t('important')}>
+                                <Icon name={item.isImportant ? "star" : "star-border"} size={20} color={item.isImportant ? Colors.star : Colors.onSurfaceVariant} />
                             </TouchableOpacity>
                         </View>
                     )}

@@ -8,16 +8,26 @@ import {
     LayoutAnimation,
     Modal,
     TextInput,
-    Share
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
-import { useNavigation } from '@react-navigation/native'; // Added import
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useTodos } from '../hooks/useTodos';
 import TodoListItem from './TodoListItem';
-import styles from '../styles';
+import styles, { Colors } from '../styles';
 import i18n from '../i18n';
 
+type Filter = 'ALL' | 'ACTIVE' | 'COMPLETED' | 'IMPORTANT';
+
+const EMPTY_STATE: Record<Filter, { icon: string; title: string; subtitle: string }> = {
+    ALL: { icon: 'check-circle-outline', title: 'empty_all_title', subtitle: 'empty_all_subtitle' },
+    ACTIVE: { icon: 'done-all', title: 'empty_active_title', subtitle: 'empty_active_subtitle' },
+    COMPLETED: { icon: 'inbox', title: 'empty_completed_title', subtitle: 'empty_completed_subtitle' },
+    IMPORTANT: { icon: 'star-border', title: 'empty_important_title', subtitle: 'empty_important_subtitle' },
+};
+
 const TodoList = () => {
-    const navigation = useNavigation(); // Added useNavigation hook
     const {
         tasks,
         editId,
@@ -39,7 +49,7 @@ const TodoList = () => {
     } = useTodos();
 
     const [text, setText] = useState('');
-    const [filter, setFilter] = useState('ALL');
+    const [filter, setFilter] = useState<Filter>('ALL');
     const [expandedId, setExpandedId] = useState<string | null>(null);
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -53,6 +63,10 @@ const TodoList = () => {
             setText('');
         }
     }, [editId, taskToEdit]);
+
+    const completedCount = React.useMemo(() => tasks.filter(t => t.done).length, [tasks]);
+    const totalCount = tasks.length;
+    const progress = totalCount > 0 ? completedCount / totalCount : 0;
 
     const filteredTasks = React.useMemo(() => {
         const sortedTasks = [...tasks].sort((a, b) => (Number(b.isImportant) - Number(a.isImportant)));
@@ -68,8 +82,11 @@ const TodoList = () => {
         }
     }, [tasks, filter]);
 
+    const isSaveDisabled = text.trim().length === 0;
+
     const onSaveTask = () => {
-        handleAddTask(text);
+        if (isSaveDisabled) return;
+        handleAddTask(text.trim());
         closeModal();
     };
 
@@ -97,90 +114,180 @@ const TodoList = () => {
         ]);
     };
 
-    const SelectionBar = () => (
-        <View style={styles.selectionBar}>
-            <TouchableOpacity onPress={exitSelectionMode}>
-                <Text style={styles.selectionBarText}>X</Text>
-            </TouchableOpacity>
-            <Text style={styles.selectionBarText}>{selectedIds.length} {i18n.t('selected')}</Text>
-            <View style={styles.selectionBarActions}>
-                <TouchableOpacity onPress={selectedIds.length === tasks.length ? clearSelection : selectAll}>
-                    <Text style={styles.selectionActionButton}>{selectedIds.length === tasks.length ? i18n.t('unselect_all') : i18n.t('select_all')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={toggleDoneSelected}>
-                    <Text style={styles.selectionActionButton}>{i18n.t('mark_as_done_undo')}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={deleteSelected}>
-                    <Text style={styles.selectionActionButton}>{i18n.t('delete')}</Text>
-                </TouchableOpacity>
+    const renderHeader = () => (
+        <View style={styles.header}>
+            <View style={styles.headerTopRow}>
+                <Text style={styles.headerTitle}>{i18n.t('app_title')}</Text>
+                <Text style={styles.headerSubtitle}>
+                    {totalCount > 0
+                        ? i18n.t('progress_summary', { done: completedCount, total: totalCount })
+                        : i18n.t('no_tasks_yet')}
+                </Text>
             </View>
+            {totalCount > 0 && (
+                <View style={styles.progressBarTrack}>
+                    <View style={[styles.progressBarFill, { width: `${progress * 100}%` as `${number}%` }]} />
+                </View>
+            )}
         </View>
     );
 
-    return (
-        <View style={styles.container}>
-            {isSelectionMode ? <SelectionBar /> : (
-                <View style={styles.filterContainer}>
-                    <TouchableOpacity style={[styles.filterButton, filter === 'ALL' && styles.activeFilterButton]} onPress={() => setFilter('ALL')}><Text style={styles.filterButtonText}>{i18n.t('all')}</Text></TouchableOpacity>
-                    <TouchableOpacity style={[styles.filterButton, filter === 'ACTIVE' && styles.activeFilterButton]} onPress={() => setFilter('ACTIVE')}><Text style={styles.filterButtonText}>{i18n.t('active')}</Text></TouchableOpacity>
-                    <TouchableOpacity style={[styles.filterButton, filter === 'COMPLETED' && styles.activeFilterButton]} onPress={() => setFilter('COMPLETED')}><Text style={styles.filterButtonText}>{i18n.t('completed')}</Text></TouchableOpacity>
-                    <TouchableOpacity style={[styles.filterButton, filter === 'IMPORTANT' && styles.activeFilterButton]} onPress={() => setFilter('IMPORTANT')}><Text style={styles.filterButtonText}>★</Text></TouchableOpacity>
-                </View>
-            )}
-
-            <FlatList
-                data={filteredTasks}
-                renderItem={({ item }) => (
-                    <TodoListItem
-                        item={item}
-                        isExpanded={item.id === expandedId}
-                        isSelected={selectedIds.includes(item.id)}
-                        isSelectionMode={isSelectionMode}
-                        onToggleExpand={handleToggleExpand}
-                        onToggleDone={() => handleToggleDone(item.id)}
-                        onTogglePriority={() => handleTogglePriority(item.id)}
-                        onDelete={() => confirmDeleteTask(item.id)}
-                        onEdit={() => setEditId(item.id)}
-                        onEnterSelectionMode={() => enterSelectionMode(item.id)}
-                        onToggleSelection={toggleSelection}
-                    />
-                )}
-                keyExtractor={(item) => item.id}
-                extraData={{ expandedId, selectedIds, isSelectionMode }} // Ensures re-render on all state changes
-                contentContainerStyle={{ gap: 10 }} // Added gap
-            />
-
-            <Modal
-                transparent={true}
-                visible={isModalVisible}
-                animationType="fade"
-                onRequestClose={closeModal}
+    const renderFilterButton = (value: Filter, label?: string, iconName?: string) => {
+        const active = filter === value;
+        return (
+            <TouchableOpacity
+                style={[styles.filterButton, active && styles.activeFilterButton]}
+                onPress={() => setFilter(value)}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                accessibilityLabel={label ?? i18n.t('important')}
             >
-                <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPressOut={closeModal}>
-                    <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
-                        <Text style={styles.modalTitle}>{editId ? i18n.t('edit_task') : i18n.t('add_new_task')}</Text>
-                        <TextInput
-                            style={styles.modalInput}
-                            placeholder={i18n.t('enter_new_task')}
-                            multiline
-                            value={text}
-                            onChangeText={setText}
-                            autoFocus={true}
+                {iconName ? (
+                    <Icon name={iconName} size={18} color={active ? Colors.onPrimary : Colors.star} />
+                ) : (
+                    <Text style={styles.filterButtonText}>{label}</Text>
+                )}
+            </TouchableOpacity>
+        );
+    };
+
+    const renderSelectionBar = () => {
+        const allSelected = selectedIds.length === tasks.length;
+        return (
+            <View style={styles.selectionBar}>
+                <TouchableOpacity onPress={exitSelectionMode} accessibilityLabel={i18n.t('cancel')}>
+                    <Icon name="close" size={24} color={Colors.onPrimary} />
+                </TouchableOpacity>
+                <Text style={styles.selectionBarText}>{selectedIds.length} {i18n.t('selected')}</Text>
+                <View style={styles.selectionBarActions}>
+                    <TouchableOpacity
+                        onPress={allSelected ? clearSelection : selectAll}
+                        style={styles.selectionIconButton}
+                        accessibilityLabel={allSelected ? i18n.t('unselect_all') : i18n.t('select_all')}
+                    >
+                        <Icon name={allSelected ? 'deselect' : 'select-all'} size={24} color={Colors.secondary} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={toggleDoneSelected}
+                        style={styles.selectionIconButton}
+                        accessibilityLabel={i18n.t('mark_as_done_undo')}
+                    >
+                        <Icon name="done-all" size={24} color={Colors.secondary} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={deleteSelected}
+                        style={styles.selectionIconButton}
+                        accessibilityLabel={i18n.t('delete')}
+                    >
+                        <Icon name="delete" size={24} color={Colors.error} />
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    };
+
+    const renderEmptyState = () => {
+        const config = EMPTY_STATE[filter];
+        return (
+            <View style={styles.emptyContainer}>
+                <Icon name={config.icon} size={64} color={Colors.onSurfaceVariant} />
+                <Text style={styles.emptyTitle}>{i18n.t(config.title)}</Text>
+                <Text style={styles.emptySubtitle}>{i18n.t(config.subtitle)}</Text>
+            </View>
+        );
+    };
+
+    return (
+        <SafeAreaView style={styles.safeArea} edges={['top']}>
+            <View style={styles.container}>
+                {isSelectionMode ? renderSelectionBar() : (
+                    <>
+                        {renderHeader()}
+                        <View style={styles.filterContainer}>
+                            {renderFilterButton('ALL', i18n.t('all'))}
+                            {renderFilterButton('ACTIVE', i18n.t('active'))}
+                            {renderFilterButton('COMPLETED', i18n.t('completed'))}
+                            {renderFilterButton('IMPORTANT', undefined, 'star')}
+                        </View>
+                    </>
+                )}
+
+                <FlatList
+                    data={filteredTasks}
+                    renderItem={({ item }) => (
+                        <TodoListItem
+                            item={item}
+                            isExpanded={item.id === expandedId}
+                            isSelected={selectedIds.includes(item.id)}
+                            isSelectionMode={isSelectionMode}
+                            onToggleExpand={handleToggleExpand}
+                            onToggleDone={() => handleToggleDone(item.id)}
+                            onTogglePriority={() => handleTogglePriority(item.id)}
+                            onDelete={() => confirmDeleteTask(item.id)}
+                            onEdit={() => setEditId(item.id)}
+                            onEnterSelectionMode={() => enterSelectionMode(item.id)}
+                            onToggleSelection={toggleSelection}
                         />
-                        <TouchableOpacity style={styles.modalButton} onPress={onSaveTask}>
-                            <Text style={styles.modalButtonText}>{editId ? i18n.t('update') : i18n.t('add')}</Text>
+                    )}
+                    keyExtractor={(item) => item.id}
+                    extraData={{ expandedId, selectedIds, isSelectionMode }} // Ensures re-render on all state changes
+                    contentContainerStyle={[
+                        { gap: 10 },
+                        filteredTasks.length === 0 && { flexGrow: 1 },
+                    ]}
+                    ListEmptyComponent={isSelectionMode ? null : renderEmptyState()}
+                    showsVerticalScrollIndicator={false}
+                />
+
+                <Modal
+                    transparent={true}
+                    visible={isModalVisible}
+                    animationType="fade"
+                    onRequestClose={closeModal}
+                >
+                    <KeyboardAvoidingView
+                        style={{ flex: 1 }}
+                        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                    >
+                        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPressOut={closeModal}>
+                            <View style={styles.modalContent} onStartShouldSetResponder={() => true}>
+                                <Text style={styles.modalTitle}>{editId ? i18n.t('edit_task') : i18n.t('add_new_task')}</Text>
+                                <TextInput
+                                    style={styles.modalInput}
+                                    placeholder={i18n.t('enter_new_task')}
+                                    placeholderTextColor={Colors.onSurfaceVariant}
+                                    multiline
+                                    value={text}
+                                    onChangeText={setText}
+                                    autoFocus={true}
+                                />
+                                <TouchableOpacity
+                                    style={[styles.modalButton, isSaveDisabled && styles.modalButtonDisabled]}
+                                    onPress={onSaveTask}
+                                    disabled={isSaveDisabled}
+                                    accessibilityRole="button"
+                                >
+                                    <Text style={[styles.modalButtonText, isSaveDisabled && styles.modalButtonTextDisabled]}>
+                                        {editId ? i18n.t('update') : i18n.t('add')}
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
                         </TouchableOpacity>
-                    </View>
-                </TouchableOpacity>
-            </Modal>
+                    </KeyboardAvoidingView>
+                </Modal>
 
-
-            {!isSelectionMode && (
-                <TouchableOpacity style={styles.floatingActionButton} onPress={openNewTaskModal}>
-                    <Text style={styles.fabText}>+</Text>
-                </TouchableOpacity>
-            )}
-        </View>
+                {!isSelectionMode && (
+                    <TouchableOpacity
+                        style={styles.floatingActionButton}
+                        onPress={openNewTaskModal}
+                        accessibilityRole="button"
+                        accessibilityLabel={i18n.t('add_new_task')}
+                    >
+                        <Icon name="add" size={32} color={Colors.onSecondary} />
+                    </TouchableOpacity>
+                )}
+            </View>
+        </SafeAreaView>
     );
 };
 

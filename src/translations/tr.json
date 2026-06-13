@@ -1,4 +1,7 @@
 {
+  "app_title": "Görevlerim",
+  "progress_summary": "%{total} görevden %{done} tamamlandı",
+  "no_tasks_yet": "Henüz görev yok",
   "all": "Tümü",
   "active": "Aktif",
   "completed": "Tamamlananlar",
@@ -16,6 +19,16 @@
   "unselect_all": "Tümünü Bırak",
   "select_all": "Tümünü Seç",
   "mark_as_done_undo": "Bitti/Geri Al",
+  "done": "Bitti",
+  "undo": "Geri Al",
   "edit": "Düzenle",
-  "share": "Paylaş"
+  "share": "Paylaş",
+  "empty_all_title": "Henüz görev yok",
+  "empty_all_subtitle": "İlk görevinizi eklemek için + düğmesine dokunun.",
+  "empty_active_title": "Her şey tamam!",
+  "empty_active_subtitle": "Şu anda aktif göreviniz yok.",
+  "empty_completed_title": "Henüz tamamlanan yok",
+  "empty_completed_subtitle": "Bitirdiğiniz görevler burada görünecek.",
+  "empty_important_title": "Önemli görev yok",
+  "empty_important_subtitle": "Önemli olarak işaretlemek için göreve yıldız verin."
 }
