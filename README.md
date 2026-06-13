@@ -7,6 +7,27 @@ BasicNotes, günlük görevlerinizi kolayca yönetmenizi sağlayan modern ve aç
 
 ## Özellikler
 
+### 🎮 İlerleme ve Motivasyon
+-   **🔥 Günlük Seri:** Her gün en az bir görev tamamlayarak serinizi canlı tutun (esnek kural).
+-   **🎯 Günlük Hedef:** Başlıktaki halka günlük hedefinize doğru dolar; hedefi tutturmak "mükemmel gün" bonusu kazandırır.
+-   **⭐ XP ve Seviyeler:** Her tamamlanan görev XP kazandırır (önemli görevler +5); zamanla seviye atlarsınız.
+-   **🏆 Başarım Rozetleri:** Açılacak 8 kilometre taşı (ilk görev, 7/30 günlük seri, 100/500 görev, seviye 5...).
+-   **📊 İstatistik Ekranı:** Güncel ve en iyi seri, seviye ilerlemesi ve son 7 günlük tamamlama grafiği.
+
+### ✅ Görev Yönetimi
+-   **Görevler:** Saniyeler içinde ekleme, düzenleme, tamamlama ve silme.
+-   **Önceliklendirme:** Önemli görevleri yıldızlayıp en üstte tutma.
+-   **Filtreler:** Tümü, Aktif, Tamamlanan, Önemli.
+-   **Çoklu Seçim:** Birden fazla görevi toplu tamamlama veya silme.
+-   **Kaydırma Hareketleri:** Tamamlamak veya silmek için sezgisel kaydırma.
+-   **Paylaşım:** Görev metnini başka uygulamalarla paylaşma.
+
+### 🔒 Gizlilik ve Tasarım
+-   **%100 Çevrimdışı:** Tüm veriler cihazda saklanır (MMKV); internet, hesap veya bulut gerekmez.
+-   **Takip Yok:** Reklam yok, analiz yok, veri toplama yok.
+-   **Yerelleştirme:** Cihaz diline göre Türkçe ve İngilizce.
+-   **Modern Arayüz:** Sade, koyu Material teması.
+
 ## Kullanılan Teknolojiler
 
 Bu proje aşağıdaki temel teknolojiler ve kütüphaneler kullanılarak geliştirilmiştir:

@@ -1,0 +1,30 @@
+BasicNotes is a free, private, and beautifully simple to-do list — now with streaks, XP, and achievements that make finishing tasks genuinely satisfying.
+
+No account. No ads. No tracking. Everything stays on your device.
+
+★ STAY ON TRACK
+• 🔥 Daily streak — complete at least one task a day to keep your chain alive
+• 🎯 Daily goal ring — set a target and watch it fill
+• ⭐ XP & levels — earn points for every task and level up
+• 🏆 Achievement badges — 8 milestones to unlock
+• 📊 Stats — current & best streak, level progress, and a last-7-days chart
+
+★ GET THINGS DONE
+• Add, edit, complete, and delete tasks in seconds
+• Star important tasks to keep them on top
+• Filters: All, Active, Completed, Important
+• Multi-select to complete or delete in bulk
+• Swipe to complete or remove
+• Share a task to any app
+
+★ PRIVATE BY DESIGN
+• 100% offline — works with no internet
+• No sign-up, no email, no cloud
+• No analytics, no ads, no data collection
+• Open source
+
+★ BEAUTIFUL & FAST
+• Clean Material dark theme
+• English & Turkish
+
+Turn your to-do list into a daily habit you actually enjoy. Download BasicNotes and start your streak today.
