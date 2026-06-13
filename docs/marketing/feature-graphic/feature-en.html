@@ -1,0 +1,86 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:1024px; height:500px; overflow:hidden; }
+  body {
+    font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;
+    background:
+      radial-gradient(900px 500px at 78% 50%, rgba(187,134,252,.18), transparent 60%),
+      radial-gradient(700px 500px at 18% 120%, rgba(3,218,198,.14), transparent 60%),
+      linear-gradient(135deg,#0e0e12 0%, #14121d 60%, #0c0c10 100%);
+    position:relative;
+  }
+  .wrap { display:flex; width:100%; height:100%; align-items:center; }
+  .left { width:600px; padding:0 0 0 64px; }
+  .brand { font-size:74px; font-weight:800; letter-spacing:-1.5px; color:#fff; line-height:1; }
+  .brand b { color:#03DAC6; font-weight:800; }
+  .tag { font-size:34px; font-weight:700; color:#fff; margin-top:18px; letter-spacing:-.5px; }
+  .tag em { color:#BB86FC; font-style:normal; }
+  .feat { margin-top:22px; display:flex; gap:10px; flex-wrap:wrap; }
+  .chip { display:flex; align-items:center; gap:8px; background:#1f1f29; border:1px solid #2c2c3a;
+          color:#e8e8ef; font-size:18px; font-weight:600; padding:9px 15px; border-radius:24px; }
+  .sub { margin-top:24px; color:#9a9aa8; font-size:17px; font-weight:600; letter-spacing:.3px; }
+  .sub span { color:#03DAC6; }
+
+  /* phone */
+  .right { flex:1; display:flex; align-items:center; justify-content:center; position:relative; }
+  .glow { position:absolute; width:360px; height:360px; border-radius:50%;
+          background:radial-gradient(circle, rgba(3,218,198,.25), transparent 65%); filter:blur(8px); }
+  .phone { position:relative; width:250px; height:430px; background:#121212; border:8px solid #000;
+           border-radius:36px; box-shadow:0 30px 60px rgba(0,0,0,.55); padding:18px 14px; transform:rotate(3deg); }
+  .ph-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .streak { display:flex; align-items:center; gap:5px; background:#282828; padding:5px 11px; border-radius:14px;
+            color:#fff; font-weight:800; font-size:16px; }
+  .ph-right { display:flex; align-items:center; gap:8px; }
+  .lv { background:#FFD700; color:#000; font-size:13px; font-weight:800; padding:3px 9px; border-radius:11px; }
+  .ic { width:30px; height:30px; border-radius:15px; background:#282828; display:flex; align-items:center; justify-content:center; font-size:15px; }
+  .ttl-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .ttl { color:#fff; font-size:24px; font-weight:800; }
+  .ttl .s { color:#8a8a96; font-size:11px; font-weight:600; }
+  .ring { width:52px; height:52px; border-radius:50%; background:conic-gradient(#03DAC6 216deg,#282828 0);
+          display:flex; align-items:center; justify-content:center; }
+  .ring i { width:40px; height:40px; border-radius:50%; background:#121212; display:flex; align-items:center; justify-content:center;
+            color:#fff; font-weight:800; font-size:13px; font-style:normal; }
+  .task { border-radius:11px; padding:13px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+  .t1 { background:#3A24B3; color:#fff; font-size:14px; font-weight:600; }
+  .t2 { background:#16221f; color:#7d8a86; font-size:14px; text-decoration:line-through; }
+  .star { font-size:15px; }
+  .bars { display:flex; align-items:flex-end; gap:6px; height:46px; margin-top:6px; padding:0 4px; }
+  .bars div { width:14px; border-radius:3px; background:#BB86FC; }
+
+  .confetti { position:absolute; border-radius:2px; }
+</style></head>
+<body>
+  <div class="wrap">
+    <div class="left">
+      <div class="brand">Basic<b>Notes</b></div>
+      <div class="tag">The to-do list you<br><em>actually want to open.</em></div>
+      <div class="feat">
+        <div class="chip">🔥 Streaks</div>
+        <div class="chip">⭐ XP &amp; Levels</div>
+        <div class="chip">🏆 Badges</div>
+        <div class="chip">📊 Stats</div>
+      </div>
+      <div class="sub">FREE · PRIVATE · <span>NO ADS · NO ACCOUNT</span></div>
+    </div>
+    <div class="right">
+      <div class="glow"></div>
+      <div class="phone">
+        <div class="ph-top">
+          <div class="streak">🔥 12</div>
+          <div class="ph-right"><div class="lv">Lv 4</div><div class="ic">📊</div></div>
+        </div>
+        <div class="ttl-row">
+          <div><div class="ttl">My Tasks</div><div class="s">3 of 6 completed</div></div>
+          <div class="ring"><i>3/5</i></div>
+        </div>
+        <div class="task t1"><span>Finish the presentation</span><span class="star">⭐</span></div>
+        <div class="task t2"><span>Morning run 🏃</span><span class="star">⭐</span></div>
+        <div class="bars"><div style="height:40%"></div><div style="height:70%"></div><div style="height:45%"></div><div style="height:90%"></div><div style="height:60%"></div><div style="height:35%;background:#3700B3"></div><div style="height:55%;background:#03DAC6"></div></div>
+      </div>
+      <span class="confetti" style="top:70px;left:40px;width:9px;height:9px;background:#FFD700;transform:rotate(20deg)"></span>
+      <span class="confetti" style="bottom:90px;right:30px;width:8px;height:8px;background:#03DAC6;transform:rotate(-15deg)"></span>
+      <span class="confetti" style="top:120px;right:18px;width:7px;height:7px;background:#BB86FC;border-radius:50%"></span>
+    </div>
+  </div>
+</body></html>
