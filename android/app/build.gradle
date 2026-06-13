@@ -93,8 +93,8 @@ android {
         applicationId "com.basicnotes"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "3.0"
+        versionCode 4
+        versionName "3.0.1"
     }
     signingConfigs {
         debug {
@@ -104,10 +104,15 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file(secrets.MYAPP_UPLOAD_STORE_FILE)
-            storePassword secrets.MYAPP_UPLOAD_STORE_PASSWORD
-            keyAlias secrets.MYAPP_UPLOAD_KEY_ALIAS
-            keyPassword secrets.MYAPP_UPLOAD_KEY_PASSWORD
+            // Only configure release signing when secrets.properties is present.
+            // Without this guard, file(null) breaks configuration for ALL builds
+            // (including debug) on any checkout lacking secrets.properties.
+            if (secrets.MYAPP_UPLOAD_STORE_FILE != null) {
+                storeFile file(secrets.MYAPP_UPLOAD_STORE_FILE)
+                storePassword secrets.MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias secrets.MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword secrets.MYAPP_UPLOAD_KEY_PASSWORD
+            }
         }
     }
     buildTypes {

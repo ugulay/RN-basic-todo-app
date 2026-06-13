@@ -94,3 +94,6 @@ tmp/
 /android/secrets.properties
 
 upload_certificate.pem
+
+# Superpowers brainstorm visual-companion scratch
+.superpowers/
