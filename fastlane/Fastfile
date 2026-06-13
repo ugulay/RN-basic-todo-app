@@ -1,0 +1,45 @@
+default_platform(:android)
+
+AAB_PATH = "android/app/build/outputs/bundle/release/app-release.aab"
+
+platform :android do
+  desc "Upload release AAB + store listing to Play internal testing (DRAFT — you publish in Console)"
+  lane :internal do
+    upload_to_play_store(
+      track: "internal",
+      release_status: "draft",   # lands as a draft; you click 'rollout' in Play Console
+      aab: AAB_PATH,
+      skip_upload_apk: true,
+      # Binary only during testing — don't change the LIVE public listing yet
+      # (the new ASO/screenshots advertise streaks/XP; push those at production time via `listing`).
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      skip_upload_changelogs: true,
+    )
+  end
+
+  desc "Upload ONLY the store listing (title/desc/screenshots) — no binary"
+  lane :listing do
+    upload_to_play_store(
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      metadata_path: "fastlane/metadata/android",
+    )
+  end
+
+  desc "Promote the latest internal release to production (staged 20%)"
+  lane :promote do
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: "production",
+      rollout: "0.2",
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end

@@ -97,3 +97,11 @@ upload_certificate.pem
 
 # Superpowers brainstorm visual-companion scratch
 .superpowers/
+
+# fastlane — never commit the Play service-account key or run artifacts
+fastlane/play-service-account.json
+fastlane/*.json
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/test_output/
+fastlane/README.md
